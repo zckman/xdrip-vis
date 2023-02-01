@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js"
+    integrity="sha512-42PE0rd+wZ2hNXftlM78BSehIGzezNeQuzihiBCvUEB3CVxHvsShF86wBWwQORNxNINlBPuq7rG4WWhNiTVHFg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<head>
+    <title>My REST API</title>
+</head>
+
+<body>
+    <h1>Available Routes:</h1>
+    <ul>
+        <li id="bloodtest">
+            GET /bloodtest?start=&lt;startTime&gt;&end=&lt;endTime&gt; - Retrieve blood test data for the given time
+            period
+        </li>
+        <li id="bgreadings">
+            GET /bgreadings?start=&lt;startTime&gt;&end=&lt;endTime&gt; - Retrieve CGM sensor data for the given time
+            period
+        </li>
+        <li id="treatments">
+            GET /treatments?start=&lt;startTime&gt;&end=&lt;endTime&gt; - Retrieve treatment data for the given time
+            period
+        </li>
+        <li>
+            POST /upload - Upload a new SQLite database file to replace the current one<br>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="export">
+                <button type="submit">Upload</button>
+            </form>
+        </li>
+    </ul>
+    <script>
+        const now = moment();
+        const tomorrow = moment(now).add(1, 'days').startOf('day').add(12, 'hours')
+        const lastWeek = moment(now).subtract(6, 'days').startOf('day')
+
+        const offset = new Date().getTimezoneOffset()
+
+        startTimestamp = lastWeek.format("x")
+        endTimestamp = tomorrow.format('x')
+
+        const formTemplate = `<form method="get">
+                <div class="form-group start">
+                    <label>
+                      <input type="checkbox" checked />
+                      Start Date:
+                  </label>            
+                    <input type="date" />
+                    <input type="hidden" name="start" value="${startTimestamp}"/>
+                  </div>
+                <div class="form-group end">
+                  <label>
+                    <input type="checkbox" checked />
+                    End Date:
+                </label>            
+                  <input type="date" />
+                  <input type="hidden" name="end" value="${endTimestamp}"/>
+                </div>
+                <button type="submit">Submit</button>`
+        const routes = ['bloodtest', 'bgreadings', 'treatments']
+        window.onload = function () {
+            routes.forEach(routeId => {
+                const route = document.getElementById(routeId)
+                route.innerHTML += formTemplate
+                const form = document.querySelector(`#${routeId} form`)
+                form.action = `/${routeId}`
+                const start = form.querySelector(".form-group.start")
+                const end = form.querySelector(".form-group.end")
+                start.querySelector("[type=\"date\"]").valueAsDate = lastWeek.clone().subtract(offset, 'minutes').toDate()
+                end.querySelector("[type=\"date\"]").valueAsDate = tomorrow.clone().subtract(offset, 'minutes').toDate()
+                
+                const handleCheckbox = (formgroup) => {
+                    const checkbox = formgroup.querySelector("[type=\"checkbox\"]")
+                    formgroup.querySelectorAll("input").forEach(input => {
+                        if (input != checkbox) {
+                            input.disabled = !checkbox.checked;
+                        }
+                    })
+                }
+                handleCheckbox(start)
+                handleCheckbox(end)
+                
+                const startCheckbox = start.querySelector("[type=\"checkbox\"]")
+                const endCheckbox = end.querySelector("[type=\"checkbox\"]")
+                startCheckbox.addEventListener("change", () => handleCheckbox(start))
+                endCheckbox.addEventListener("change", () => handleCheckbox(end))
+
+                const handleDatePick = (formgroup) => {
+                    const datePicker = formgroup.querySelector("[type=\"date\"]")
+                    const hidden = formgroup.querySelector("[type=\"hidden\"]")
+                    hidden.value = moment(datePicker.valueAsDate).add(offset, 'minutes').startOf('day').format('x')
+                }
+                handleDatePick(start)
+                handleDatePick(end)
+                
+                const startDatePicker = start.querySelector("[type=\"date\"]")
+                const endDatePicker = end.querySelector("[type=\"date\"]")
+                startDatePicker.addEventListener("change", () => handleDatePick(start))
+                endDatePicker.addEventListener("change", () => handleDatePick(end))
+            })
+        }
+    </script>
+</body>
+
+</html>
