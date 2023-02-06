@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const knex = require("knex");
 const multer = require("multer");
 const fs = require("fs");
@@ -25,6 +26,7 @@ const useDb = (filename) => {
 useDb("export.sqlite")
 
 app.use(express.json());
+app.use(cors());
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
