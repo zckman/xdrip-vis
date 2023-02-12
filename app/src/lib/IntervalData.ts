@@ -1,4 +1,4 @@
-import { DateTime, type Interval } from "luxon";
+import { DateTime, type Interval, Duration } from "luxon";
 
 
 export default class IntervalData {
@@ -13,7 +13,7 @@ export default class IntervalData {
                 const timestamp = Object.hasOwn(item, "created_timestamp")
                     ? item.created_timestamp
                     : item.timestamp
-                    
+
                 return interval.contains(DateTime.fromMillis(timestamp)) && timestamp != interval.end.toMillis()
             }
         this.data = {
@@ -44,6 +44,25 @@ export default class IntervalData {
             dt = DateTime.fromMillis(dt)
         }
         return dt.diff(this.interval.start).toMillis()
+    }
+
+    /**
+     * 
+     * @param interval 
+     * @returns new IntervalData with data in the cross-section of both intervals
+     */
+    public withInterval(interval: Interval): IntervalData {
+        return new IntervalData(interval, this.data)
+    }
+
+    /**
+     * See Interval::splitBy
+     * @param duration 
+     * @returns 
+     */
+    public splitBy(duration: Duration): IntervalData[] {
+        const intervals = this.interval.splitBy(duration)
+        return intervals.map(interval => this.withInterval(interval))
     }
 
 }

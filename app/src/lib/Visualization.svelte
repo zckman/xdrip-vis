@@ -7,6 +7,7 @@
     import { timeDay } from "d3-time";
     import { scaleBand, scaleTime } from "d3-scale";
     import ScatterSvg from "./layercake/Scatter.svg.svelte";
+    import XdripScatterSvg from "./layercake/XdripScatter.svg.svelte";
     import AxisX from "./layercake/AxisX.svelte";
     import AxisY from "./layercake/AxisY.svelte";
     import IntervalData from "./IntervalData";
@@ -44,21 +45,17 @@
                 interval.end.toJSDate()
             );
 
-            // split interval into days and map api results to `Day[]`
-            const intervals = interval.splitBy(oneDay);
             daysPromise = Promise.all([
                 bgReadings,
                 bloodTests,
                 treatments,
             ]).then((value: [BgReadings, BloodTests, Treatments]) => {
-                return intervals.map(
-                    (interval) =>
-                        new IntervalData(interval, {
+                // split data into days
+                return new IntervalData(interval, {
                             bgReadings: value[0],
                             bloodTests: value[1],
                             treatments: value[2],
-                        })
-                );
+                        }).splitBy(oneDay)
             });
         } else {
             daysPromise = Promise.resolve([]);
@@ -82,25 +79,17 @@
                 <LayerCake
                     xDomain={[0, 24 * 60 * 60]}
                     yDomain={[25, 350]}
-                    xScale={scaleTime()}
-                    data={day.data.bgReadings.items}
-                    x={(bgreading) =>
-                        Math.round(
-                            day.diffFromStart(bgreading.timestamp) / 1000
-                        )}
-                    y={(bgreading) => bgreading.filtered_calculated_value}
+                    data={day}
                 >
-                    
                     <Svg>
                         <AxisX
-                        ticks={[0, 4, 8, 12, 16, 20, 24].map(
-                            (d) => d * 60 * 60
-                        )}
-                        formatTick={(d) => `${Math.floor(d / 60 / 60)}:00`}
-                    />
-                    <AxisY ticks={[50, 100, 150, 200, 250, 300, 350]}/>
-                        <!-- You can expose properties on your chart components to make them more reusable -->
-                        <ScatterSvg fill={"blue"} r={2} />
+                            ticks={[0, 4, 8, 12, 16, 20, 24].map(
+                                (d) => d * 60 * 60
+                            )}
+                            formatTick={(d) => `${Math.floor(d / 60 / 60)}:00`}
+                        />
+                        <AxisY ticks={[50, 100, 150, 200, 250, 300, 350]} />
+                        <XdripScatterSvg />
                     </Svg>
                 </LayerCake>
             </div>
