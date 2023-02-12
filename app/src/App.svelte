@@ -11,7 +11,6 @@
 <style lang="scss">
   main {
     width: 100%;
-    padding: 100px 50px;
     @media print {
       padding: 1cm;
     }
