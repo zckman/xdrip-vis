@@ -9,12 +9,12 @@
     import ScatterSvg from "./layercake/Scatter.svg.svelte";
     import AxisX from "./layercake/AxisX.svelte";
     import AxisY from "./layercake/AxisY.svelte";
-    import Day from "./Day";
+    import IntervalData from "./IntervalData";
 
     let startDate: Date | null;
     let endDate: Date | null;
     let interval: Interval | null;
-    let daysPromise: Promise<Day[]> = Promise.resolve([]);
+    let daysPromise: Promise<IntervalData[]> = Promise.resolve([]);
 
     /** used to split the interval later */
     const oneDay = Duration.fromObject({ days: 1 });
@@ -53,7 +53,7 @@
             ]).then((value: [BgReadings, BloodTests, Treatments]) => {
                 return intervals.map(
                     (interval) =>
-                        new Day(interval, {
+                        new IntervalData(interval, {
                             bgReadings: value[0],
                             bloodTests: value[1],
                             treatments: value[2],

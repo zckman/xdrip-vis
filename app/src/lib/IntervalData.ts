@@ -1,7 +1,7 @@
 import { DateTime, type Interval } from "luxon";
 
 
-export default class Day {
+export default class IntervalData {
 
     interval: Interval
     data: ApiResults
