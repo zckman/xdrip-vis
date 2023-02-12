@@ -6,7 +6,6 @@ const fs = require("fs");
 const path = require("path");
 const https = require('https');
 const selfsigned = require('selfsigned');
-const { isArray } = require("util");
 const app = express();
 
 const cacheDirectory = path.join(__dirname, 'node_modules/.cache/xdrip-vis');
