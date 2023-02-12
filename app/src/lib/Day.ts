@@ -9,11 +9,17 @@ export default class Day {
     constructor(interval: Interval, data: ApiResults) {
         this.interval = interval
         const filterByTimestamp =
-        item => interval.contains(DateTime.fromMillis(item.timestamp)) && item.timestamp != interval.end.toMillis()
+            item => {
+                const timestamp = Object.hasOwn(item, "created_timestamp")
+                    ? item.created_timestamp
+                    : item.timestamp
+                    
+                return interval.contains(DateTime.fromMillis(timestamp)) && timestamp != interval.end.toMillis()
+            }
         this.data = {
-            bgReadings: { items : data.bgReadings.items.filter(filterByTimestamp)},
-            bloodTests: { items : data.bloodTests.items.filter(filterByTimestamp)},
-            treatments: { items : data.treatments.items.filter(filterByTimestamp)},
+            bgReadings: { items: data.bgReadings.items.filter(filterByTimestamp) },
+            bloodTests: { items: data.bloodTests.items.filter(filterByTimestamp) },
+            treatments: { items: data.treatments.items.filter(filterByTimestamp) },
         }
     }
 
@@ -31,10 +37,10 @@ export default class Day {
     public diffFromStart(dt: DateTime): number
     public diffFromStart(dt: number): number
     public diffFromStart(dt: Date | DateTime | number): number {
-        if (dt instanceof Date){
+        if (dt instanceof Date) {
             dt = DateTime.fromJSDate(dt)
         }
-        if(typeof dt === 'number') {
+        if (typeof dt === 'number') {
             dt = DateTime.fromMillis(dt)
         }
         return dt.diff(this.interval.start).toMillis()
