@@ -155,4 +155,5 @@ const options = { key, cert }
 
 https.createServer(options, app).listen(port, () => {
   console.log(`Server listening on port ${port}: ${serverUrl}`);
+  console.log(`Visualization app: ${serverUrl}/app`);
 });
