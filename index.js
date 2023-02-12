@@ -10,6 +10,9 @@ const app = express();
 
 const cacheDirectory = path.join(__dirname, 'node_modules/.cache/xdrip-vis');
 const certCacheFile = path.join(cacheDirectory, 'pems.json');
+const dbPath = 'export.sqlite'
+const port = process.env.PORT || 3000;
+const serverUrl = `https://localhost:${port}`
 
 let db;
 
@@ -23,7 +26,13 @@ const useDb = (filename) => {
   });
 }
 
-useDb("export.sqlite")
+
+if (fs.existsSync(dbPath)) {
+  console.log(`Using ${dbPath} as database`);
+  useDb(dbPath)
+} else {
+  console.log(`${dbPath} not found. Place it manually or use the upload form to add a database file: ${serverUrl}/upload.html`);
+}
 
 app.use(express.json());
 app.use(cors());
@@ -143,7 +152,7 @@ if (!pems) {
 const { private: key, cert } = pems;
 const options = { key, cert }
 
-const port = process.env.PORT || 3000;
+
 https.createServer(options, app).listen(port, () => {
-  console.log(`Server listening on port ${port}: https://localhost:${port}`);
+  console.log(`Server listening on port ${port}: ${serverUrl}`);
 });
