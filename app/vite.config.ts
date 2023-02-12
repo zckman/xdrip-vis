@@ -5,6 +5,7 @@ import basicSsl from '@vitejs/plugin-basic-ssl'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [svelte(), basicSsl()],
+  base: '/app/',
   build: {
     outDir: '../public/app/'
   } 
