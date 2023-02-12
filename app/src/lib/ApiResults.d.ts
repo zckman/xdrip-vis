@@ -9,7 +9,7 @@ interface BloodTest {
 }
 
 interface BloodTests {
-    BloodTest: BloodTest[];
+    items: BloodTest[];
 }
 
 interface BgReading {
@@ -45,7 +45,7 @@ interface BgReading {
 }
 
 interface BgReadings {
-    BgReadings: BgReading[];
+    items: BgReading[];
 }
 
 interface Treatment {
@@ -62,5 +62,11 @@ interface Treatment {
 }
 
 interface Treatments {
-    Treatments: Treatment[];
+    items: Treatment[];
+}
+
+interface ApiResults {
+    bloodTests: BloodTests
+    bgReadings: BgReadings
+    treatments: Treatments
 }

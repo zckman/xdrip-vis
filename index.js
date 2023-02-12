@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const https = require('https');
 const selfsigned = require('selfsigned');
+const { isArray } = require("util");
 const app = express();
 
 const cacheDirectory = path.join(__dirname, 'node_modules/.cache/xdrip-vis');
@@ -61,7 +62,10 @@ const genericRoute = (req, res, table) => {
       query = query.where(column, comparator, value);
     });
     query.then((rows) => {
-      res.json({ [table]: rows });
+      if (rows instanceof Object) {
+        rows = Object.values(rows)
+      }
+      res.json({ items: rows });
     });
   }
 };
