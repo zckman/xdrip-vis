@@ -49,7 +49,7 @@
       <g class='tick tick-{tick}' transform='translate({$xRange[0] + (isBandwidth ? $padding.left : 0)}, {$yScale(tick)})'>
         {#if gridlines !== false}
           <line
-            class="gridline"
+            class="gridline tick-{yTick}"
             x2='100%'
             y1={yTick + (isBandwidth ? ($yScale.bandwidth() / 2) : 0)}
             y2={yTick + (isBandwidth ? ($yScale.bandwidth() / 2) : 0)}
@@ -86,6 +86,11 @@
     }
     .tick .gridline {
       stroke-dasharray: 2;
+    }
+
+    .tick.tick-100 .gridline {
+      stroke: #888;
+      stroke-dasharray: 0;
     }
   
     .tick text {
