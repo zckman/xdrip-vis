@@ -21,11 +21,11 @@
   let insulin = treatments.filter(t => t.insulin > 0).map(t => {
     const insulinData = JSON.parse(t.insulinJSON)
     // calculate amounts per type, for now just the two types that I selected in xdrip
-    let rapid = 0, basal = 0, other = 0
+    let bolus = 0, basal = 0, other = 0
     insulinData.forEach(i => {
       switch (i.insulin) {
       case "Novorapid":
-        rapid += i.units
+        bolus += i.units
         break;
       case "Insulatard":
         basal += i.units
@@ -35,9 +35,9 @@
         break;
       }
     })
-    return { ...t, byType: {rapid, basal, other} }
+    return { ...t, byType: {bolus, basal, other} }
   });
-  let rapid = insulin.filter(i => i.byType.rapid > 0)
+  let bolus = insulin.filter(i => i.byType.bolus > 0)
   let basal = insulin.filter(i => i.byType.basal > 0)
   let other = insulin.filter(i => i.byType.other > 0)
 
@@ -99,7 +99,7 @@
   {/each}
 </g>
 <g class="scatter-group">
-  {#each rapid as i}
+  {#each bolus as i}
     <rect
       x={xGet(i) -15 + ($xScale.bandwidth ? $xScale.bandwidth() / 2 : 0)}
       y={yGet(70) + ($yScale.bandwidth ? $yScale.bandwidth() / 2 : 0)}
@@ -113,7 +113,7 @@
       fill="#ffffff"
       text-anchor="middle"
       textLength={$xScale(26 * 60 )}
-      dominant-baseline="central">{i.byType.rapid}E
+      dominant-baseline="central">{i.byType.bolus}E
     </text>
   {/each}
 </g>
