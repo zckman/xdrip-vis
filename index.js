@@ -10,7 +10,7 @@ const app = express();
 
 const cacheDirectory = path.join(__dirname, 'node_modules/.cache/xdrip-vis');
 const certCacheFile = path.join(cacheDirectory, 'pems.json');
-const dbPath = 'export.sqlite'
+const dbFile = 'export.sqlite'
 const port = process.env.PORT || 3000;
 const serverUrl = `https://localhost:${port}`
 
@@ -27,11 +27,11 @@ const useDb = (filename) => {
 }
 
 
-if (fs.existsSync(dbPath)) {
-  console.log(`Using ${dbPath} as database`);
-  useDb(dbPath)
+if (fs.existsSync(dbFile)) {
+  console.log(`Using ${dbFile} as database`);
+  useDb(dbFile)
 } else {
-  console.log(`${dbPath} not found. Place it manually or use the upload form to add a database file: ${serverUrl}/upload.html`);
+  console.log(`${dbFile} not found. Place it manually or use the upload form to add a database file: ${serverUrl}/upload.html`);
 }
 
 app.use(express.json());
@@ -42,7 +42,7 @@ const storage = multer.diskStorage({
     cb(null, "./");
   },
   filename: function (req, file, cb) {
-    cb(null, "export.sqlite");
+    cb(null, dbFile);
   },
 });
 
