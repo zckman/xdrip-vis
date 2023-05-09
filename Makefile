@@ -2,7 +2,7 @@
 
 app-init:
 	cd app && npm i
-	cd ..	
+	cd ..
 
 app-build:
 	cd app && npx vite build --emptyOutDir
@@ -12,7 +12,10 @@ app-dev:
 	cd app && npx vite dev
 	cd ..
 
-init: app-init app-build
+server-init:
+	npm i
+
+init: server-init app-init app-build
 
 up:
 	@node index.js
