@@ -58,7 +58,7 @@
   {#each bgReadings as b}
     <circle
       cx={xGet(b) + ($xScale.bandwidth ? $xScale.bandwidth() / 2 : 0)}
-      cy={yGet(b.filtered_calculated_value) +
+      cy={yGet(b.filtered_calculated_value > 0 ? b.filtered_calculated_value : b.calculated_value) +
         ($yScale.bandwidth ? $yScale.bandwidth() / 2 : 0)}
       r="2"
       fill="orange"
